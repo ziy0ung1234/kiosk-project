@@ -68,7 +68,7 @@ public class Main {
                 running = false;
             } else if (userChoice >= 1 && userChoice <= menuList.size()) {
                 MenuItem selected = menuList.get(userChoice - 1);
-                System.out.printf("고객님이 선택하신 음료는 %s 입니다.\n", selected.getName());
+                System.out.printf("선택하신 메뉴 : %-8s | %5d원 | %s 입니다.\n", selected.getName(),selected.getPrice(), selected.getDescription());
                 running = false;
             } else {
                 System.out.println("잘못된 입력입니다. 0~" + menuList.size() + " 중 하나를 입력해주세요.\n");
