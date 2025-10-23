@@ -35,7 +35,7 @@ public class Kiosk {
                 // 상위 카테고리
                 case MAIN_MENU:
                     promptMenuList(menuList);
-                    String selectedCategory = promptUserInput(sc);
+                    String selectedCategory = readUserInput(sc);
                     try {
                         int intSelectedCategory = Integer.parseInt(selectedCategory);
                         //뒤로 가기 기능
@@ -60,9 +60,9 @@ public class Kiosk {
                 case SUB_MENU:
                     if(selectedMainMenu.isPresent()) {
                         Menu selectedMenuObject = selectedMainMenu.get();
-                        List<MenuItem> menuItems = selectedMenuObject.ReadOnlyMenuItemList();
+                        List<MenuItem> menuItems = selectedMenuObject.listMenuItems();
                         promptMenuItemList(selectedMenuObject);
-                        String selectedSubMenu = promptUserInput(sc);
+                        String selectedSubMenu = readUserInput(sc);
                         int intSelectMenu;
                         try {
                             intSelectMenu = Integer.parseInt(selectedSubMenu);
@@ -93,7 +93,7 @@ public class Kiosk {
      * 유저 선택 입력 프롬포트
      * @param scanner : 스캐너
      * */
-    private static String promptUserInput(Scanner scanner) {
+    private static String readUserInput(Scanner scanner) {
         System.out.print("선택: ");
         return scanner.next();
     }
@@ -117,10 +117,15 @@ public class Kiosk {
      * 각 상위 카테고리에 대한 메뉴 아이템 프롬포트
      * @param menu : Menu object
      * */
-    public void promptMenuItemList(Menu menu) {
+    private void promptMenuItemList(Menu menu) {
         StringBuilder menuDisplay = new StringBuilder();
         menuDisplay.append("[ 💙Blue Bottle ]\n---------------------------------------------------------------------------\n");
-        menu.printAppendMenuItemList(menuDisplay);
+        int index = 1;
+        for (MenuItem item : menu.listMenuItems()) {
+            menuDisplay.append(String.format("%2d. %-8s | %5d원 | %s\n",
+                    index, item.getMenuName(), item.getMenuPrice(), item.getMenuDescription()));
+            index++;
+        }
         menuDisplay.append(" 0. 뒤로가기 \n");
         System.out.println(menuDisplay);
     }
