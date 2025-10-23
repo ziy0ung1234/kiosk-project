@@ -15,8 +15,8 @@ public class Kiosk {
     private State currentState;
     private final List<Menu> menuList;
 
-    public Kiosk(List<Menu> menus) {
-        this.menuList = menus;
+    public Kiosk(List<Menu> menuList) {
+        this.menuList = menuList;
         this.currentState = State.ACCESS;
     }
     /**
@@ -143,11 +143,11 @@ public class Kiosk {
             System.out.println("---------------------------");
 
             String inputAccess = scanner.next();
-            int intInput;
+            int userSelectNumber;
             try{
-                intInput = Integer.parseInt(inputAccess);
-                if(intInput == 1 || intInput == 2) {
-                    return intInput;
+                userSelectNumber = Integer.parseInt(inputAccess);
+                if(userSelectNumber == 1 || userSelectNumber == 2) {
+                    return userSelectNumber;
                 } else {
                     System.out.println("잘못된 입력입니다. 1과 2 중 하나를 선택해주세요.\n");
                 }
