@@ -28,7 +28,10 @@ public class Menu {
     }
 
     /**
-     *
+     * 메뉴 아이템 출력을 위한 메소드
+     *  - 기존 promptMenuItemList는 입출력 클래스 Kiosk로 이동
+     *  - 메뉴 아이템들을 출력하기 위한 데이터만 담는 메소드
+     * @param menuDisplay : 메뉴 출력할 StringBuilder 타입 문자열
      * */
     public void printAppendMenuItemList(StringBuilder menuDisplay) {
         int index = 1;
