@@ -18,11 +18,18 @@ public class Main {
         noncoffeeList.add(new MenuItem("유자 피즈", 6600, "새콤한 유자와 탄산감을 느낄 수 있는 음료"));
         noncoffeeList.add(new MenuItem("레몬에이드", 6800, "입맛돋구는 톡쏘는 음료"));
         Menu nonCoffeeMenu = new Menu("Non-Coffee",  noncoffeeList);
+        List<MenuItem> dessertList = new ArrayList<>();
+        dessertList.add(new MenuItem("헤이즐넛 마들렌", 3800, "헤이즐넛 향을 조화롭게 즐길 수 있는 디저트"));
+        dessertList.add(new MenuItem("카라멜 휘낭시에", 3500, "정성껏 카라멜라이징한 시럽을 올린 풍미있는 디저트"));
+        dessertList.add(new MenuItem("어니언 베이글", 4000, "한끼 가볍게 끝낼 수 있는 식사용 디저트"));
+        Menu dessertMenu = new Menu("Dessert",  dessertList);
         // Menu 리스트 생성
-        List<Menu>  coffeeMenuList = new ArrayList<>();
-        coffeeMenuList.add(coffeeMenu);
-        coffeeMenuList.add(nonCoffeeMenu);
-        Kiosk kiosk = new Kiosk(coffeeMenuList);
+        List<Menu>  cafeMenuList = new ArrayList<>();
+        cafeMenuList.add(coffeeMenu);
+        cafeMenuList.add(nonCoffeeMenu);
+        cafeMenuList.add(dessertMenu);
+        Kiosk kiosk = new Kiosk(cafeMenuList);
+        //실행 메소드
         kiosk.start();
     }
 }

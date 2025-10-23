@@ -8,6 +8,7 @@ import java.util.Scanner;
  * 메뉴 관리, 사용자 입력 처리
  * */
 public class Kiosk {
+    // 뒤로 가기 기능을 위한 현재 상태 처리 enum
     private enum CurrentState {
         ACCESS, MAIN_MENU, SUB_MENU, EXIT
     }
@@ -31,11 +32,13 @@ public class Kiosk {
                 case ACCESS:
                     int intIntputAccess = promptOrderAcess(sc);
                     currentState = (intIntputAccess == 1) ? CurrentState.MAIN_MENU: CurrentState.EXIT; break;
+                // 상위 카테고리
                 case MAIN_MENU:
                     promptMenuList(menuList);
                     String selectedCategory = promptUserInput(sc);
                     try {
                         int intSelectedCategory = Integer.parseInt(selectedCategory);
+                        //뒤로 가기 기능
                         if (intSelectedCategory == 0) {
                             currentState = CurrentState.ACCESS;
                             break;
@@ -53,12 +56,12 @@ public class Kiosk {
                         System.out.println("잘못된 입력입니다. 숫자로 입력해주세요.\n");
                         continue;
                     }
+                // 각 카테고리에 대한 메뉴 아이템
                 case SUB_MENU:
                     if(selectedMainMenu.isPresent()) {
                         Menu selectedMenuObject = selectedMainMenu.get();
-                        List<MenuItem> menuItems = selectedMenuObject.ReadOnlyMenuItems();
-                        selectedMenuObject.promptMenuItems();
-                        // 커피 목록
+                        List<MenuItem> menuItems = selectedMenuObject.ReadOnlyMenuItemList();
+                        promptMenuItemList(selectedMenuObject);
                         String selectedSubMenu = promptUserInput(sc);
                         int intSelectMenu;
                         try {
@@ -67,9 +70,10 @@ public class Kiosk {
                             System.out.println("잘못된 입력입니다. 숫자로 입력해주세요.\n");
                             continue;
                         }
+                        //뒤로 가기 기능
                         if (intSelectMenu == 0) {
                             currentState = CurrentState.MAIN_MENU;
-                            selectedMainMenu = Optional.empty(); // 메뉴 선택 Optional 객체도 지워줌
+                            selectedMainMenu = Optional.empty();    // 메뉴 선택 Optional 객체도 지워줌
                         } else if (intSelectMenu >= 1 && intSelectMenu <= menuItems.size()) {
                             MenuItem selected = menuItems.get(intSelectMenu - 1);
                             System.out.printf("선택하신 메뉴 : %-8s | %5d원 | %s 입니다.\n", selected.getMenuName(), selected.getMenuPrice(), selected.getMenuDescription());
@@ -85,15 +89,23 @@ public class Kiosk {
             }
         }
     }
-    private static String promptUserInput(Scanner sc) {
+    /**
+     * 유저 선택 입력 프롬포트
+     * @param scanner : 스캐너
+     * */
+    private static String promptUserInput(Scanner scanner) {
         System.out.print("선택: ");
-        return sc.next();
+        return scanner.next();
     }
-    private static void promptMenuList(List<Menu> meunList) {
+    /**
+     *  상위 카테고리 프롬포트
+     * @param menuList : <Menu>타입 List
+     * */
+    private static void promptMenuList(List<Menu> menuList) {
         StringBuilder menuPrompt = new StringBuilder();
         menuPrompt.append("[ Main Menu ]\n");
         int index = 1;
-        for(Menu menu : meunList) {
+        for(Menu menu : menuList) {
             menuPrompt.append(String.format("%2d. %-8s\n", index, menu.getCategoryName()));
             index++;
         }
@@ -102,8 +114,20 @@ public class Kiosk {
 
     }
     /**
+     * 각 상위 카테고리에 대한 메뉴 아이템 프롬포트
+     * @param menu : Menu object
+     * */
+    public void promptMenuItemList(Menu menu) {
+        StringBuilder menuDisplay = new StringBuilder();
+        menuDisplay.append("[ 💙Blue Bottle ]\n---------------------------------------------------------------------------\n");
+        menu.printAppendMenuItemList(menuDisplay);
+        menuDisplay.append(" 0. 뒤로가기 \n");
+        System.out.println(menuDisplay);
+    }
+
+    /**
      * 키오스크 최 상위 프롬포트
-     * @param scanner 스캐너
+     * @param scanner : 스캐너
      * */
     private static int promptOrderAcess(Scanner scanner) {
         while (true) {

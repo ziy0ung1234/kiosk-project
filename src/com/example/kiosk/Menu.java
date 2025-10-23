@@ -15,21 +15,28 @@ public class Menu {
         return categoryName;
     }
 
-    public List<MenuItem> ReadOnlyMenuItems() {
+    public void addMenuItem(MenuItem item) {
+        if (item == null) {
+            throw new IllegalArgumentException("MenuItem cannot be null");
+        }
+        menuItemList.add(item);
+    }
+
+    // 참조 공유 방지를 위한 읽기전용 getter 메소드
+    public List<MenuItem> ReadOnlyMenuItemList() {
         return Collections.unmodifiableList(menuItemList);
     }
 
-    public void promptMenuItems() {
-        StringBuilder menuDisplay = new StringBuilder();
-        menuDisplay.append("[ 💙Blue Bottle ]\n");
+    /**
+     *
+     * */
+    public void printAppendMenuItemList(StringBuilder menuDisplay) {
         int index = 1;
         for (MenuItem item : menuItemList) {
             menuDisplay.append(String.format("%2d. %-8s | %5d원 | %s\n",
                     index, item.getMenuName(), item.getMenuPrice(), item.getMenuDescription()));
             index++;
         }
-        menuDisplay.append(" 0. 뒤로가기 \n");
-        System.out.println(menuDisplay);
     }
 
 }

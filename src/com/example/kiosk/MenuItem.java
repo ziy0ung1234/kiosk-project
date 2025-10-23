@@ -23,5 +23,4 @@ public class MenuItem {
         return menuPrice;
     }
 
-
 }
