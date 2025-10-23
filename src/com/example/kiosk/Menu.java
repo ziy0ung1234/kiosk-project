@@ -23,7 +23,7 @@ public class Menu {
     }
 
     // 참조 공유 방지를 위한 읽기전용 getter 메소드
-    public List<MenuItem> listMenuItems() {
+    public List<MenuItem> getMenuItemList() {
         return Collections.unmodifiableList(menuItemList);
     }
 
