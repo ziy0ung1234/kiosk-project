@@ -2,9 +2,9 @@ package com.example.kiosk;
 
 public class MenuItem {
     //속성
-    private String menuName;
-    private int menuPrice;
-    private String menuDescription;
+    private final String menuName;
+    private final int menuPrice;
+    private final String menuDescription;
 
     //생성자
     public MenuItem(String name, int price, String description) {

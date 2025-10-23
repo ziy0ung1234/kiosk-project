@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Menu {
-    private String categoryName;
-    private List<MenuItem> menuItemList;
+    private final String categoryName;
+    private final List<MenuItem> menuItemList;
 
     public Menu(String categoryName, List<MenuItem> menuItemList) {
         this.categoryName = categoryName;

@@ -13,7 +13,7 @@ public class Kiosk {
         ACCESS, MAIN_MENU, SUB_MENU, EXIT
     }
     private CurrentState currentState;
-    private List<Menu> menuList;
+    private final List<Menu> menuList;
 
     public Kiosk(List<Menu> menus) {
         this.menuList = menus;
