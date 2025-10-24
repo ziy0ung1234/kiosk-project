@@ -15,13 +15,6 @@ public class Menu {
         return categoryName;
     }
 
-    public void addMenuItem(MenuItem item) {
-        if (item == null) {
-            throw new IllegalArgumentException("MenuItem cannot be null");
-        }
-        menuItemList.add(item);
-    }
-
     // 참조 공유 방지를 위한 읽기전용 getter 메소드
     public List<MenuItem> getMenuItemList() {
         return Collections.unmodifiableList(menuItemList);

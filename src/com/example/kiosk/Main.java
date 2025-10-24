@@ -28,6 +28,7 @@ public class Main {
         cafeMenuList.add(coffeeMenu);
         cafeMenuList.add(nonCoffeeMenu);
         cafeMenuList.add(dessertMenu);
+        //의존성 주입 - 메뉴 데이터는 외부(Main) 에서 주입
         Kiosk kiosk = new Kiosk(cafeMenuList);
         //실행 메소드
         kiosk.start();
