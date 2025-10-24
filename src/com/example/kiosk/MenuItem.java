@@ -2,25 +2,25 @@ package com.example.kiosk;
 
 public class MenuItem {
     //속성
-    private String menuName;
-    private int menuPrice;
-    private String menuDescription;
+    private final String name;
+    private final int price;
+    private final String description;
 
     //생성자
     public MenuItem(String name, int price, String description) {
-        this.menuName = name;
-        this.menuPrice = price;
-        this.menuDescription = description;
+        this.name = name;
+        this.price = price;
+        this.description = description;
     }
     //기능
-    public String getMenuName() {
-        return menuName;
+    public String getName() {
+        return name;
     }
-    public String getMenuDescription() {
-        return menuDescription;
+    public String getDescription() {
+        return description;
     }
-    public int getMenuPrice() {
-        return menuPrice;
+    public int getPrice() {
+        return price;
     }
 
 }
