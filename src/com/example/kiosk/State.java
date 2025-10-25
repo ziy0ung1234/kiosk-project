@@ -7,6 +7,8 @@ public enum State {
     START(Kiosk::handleStartState),
     MAIN_MENU(Kiosk::handleMainMenuState),
     SUB_MENU(Kiosk::handleSubMenuState),
+    CART(Kiosk::handleCartState),
+    ORDER(Kiosk::handleOrderState),
     EXIT(Kiosk::handleExitState);
 
     //Consumer 인터페이스 (하나의 입력을 받아서 처리, 아무것도 반환하지 않는(void))
