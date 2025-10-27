@@ -5,12 +5,16 @@ import java.util.*;
 public class Cart {
     private final Map<MenuItem, CartItem> cart = new HashMap<>();
 
-    public void addCartItem(MenuItem menuItem, int quantity) {
-        CartItem cartItem = cart.computeIfAbsent(menuItem, k -> new CartItem(menuItem));
-        cartItem.increaseQuantity(quantity);
+    public CartItem addCartItem(MenuItem menuItem, int quantity) {
+        cart.compute(menuItem, (key, cartItem) -> {
+            if (cartItem == null) cartItem = new CartItem(menuItem);
+            cartItem.increaseQuantity(quantity);
+            return cartItem;
+        });
+        return cart.get(menuItem);
     }
-    public void removeCartItem(MenuItem menuItem) {
-        cart.remove(menuItem);
+    public void clearCartItem() {
+        cart.clear();
     }
     public Collection<CartItem> getCart() {
         return cart.values();

@@ -112,8 +112,12 @@ public class Kiosk {
         if (selectCartAdd == 1) {
             System.out.println("수량 선택 (1~10):");
             int selectedQuantity = readUserInput(1,10);
-            cart.addCartItem(item, selectedQuantity);
-            System.out.printf("%s %d개 추가되었습니다.\n메뉴를 더 보시겠어요?\n1) 네  2) 아니오  \n", item.getName(), selectedQuantity);
+            CartItem cartItem = cart.addCartItem(item, selectedQuantity);
+            if(cartItem.getQuantity() == 10 && selectedQuantity > 0){
+                System.out.printf("%s는 최대 10개까지만 담을 수 있습니다. 수량 10개로 변경합니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName());
+                return readUserInput(1,2);
+            }
+            System.out.printf("%s %d개 추가되었습니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName(), selectedQuantity);
             return readUserInput(1,2);
         }
         return 0;
@@ -131,7 +135,13 @@ public class Kiosk {
         displayMenu.append(LINE).append("\n");
         displayMenu.append(String.format("총합: %d원\n1) 결제하기 2) 뒤로가기\n", cart.getTotalPrice()));
         System.out.println(displayMenu);
-        return readUserInput(1,2);
+        int userSelect = readUserInput(1,2);
+        if(userSelect == 1){
+            cart.clearCartItem();
+            System.out.print("주문 완료되었습니다.");
+            return userSelect;
+        }
+        return userSelect;
     }
 
     public void showExit() {

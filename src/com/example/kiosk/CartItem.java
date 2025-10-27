@@ -13,7 +13,7 @@ public class CartItem {
         return quantity;
     }
     public void increaseQuantity(int quantity) {
-        this.quantity += quantity;
+        this.quantity += Math.min(quantity, 10 - this.quantity);
     }
     public void decreaseQuantity(int quantity) {
         this.quantity -= Math.max(0, this.quantity - quantity);
