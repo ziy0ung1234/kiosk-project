@@ -1,21 +1,55 @@
 package com.example.kiosk;
 
-import java.util.function.Consumer;
-
 public enum State {
-    //람다 메서드 참조
-    START(Kiosk::handleStartState),
-    MAIN_MENU(Kiosk::handleMainMenuState),
-    SUB_MENU(Kiosk::handleSubMenuState),
-    EXIT(Kiosk::handleExitState);
+    START {
+        @Override
+        public State handle(Kiosk kiosk) {
+            kiosk.showStart();
+            int choice = kiosk.readUserInput(1,2);
+            return choice == 1 ? MAIN_MENU : EXIT;
+        }
+    },
+    MAIN_MENU {
+        @Override
+        public State handle(Kiosk kiosk) {
+            int userSelect = kiosk.showMainMenu();
+            if (userSelect == 0) return START; // 뒤로가기
+            kiosk.setSelectedMainMenu(userSelect - 1);
+            return kiosk.getSelectedMainMenu().isPresent() ? SUB_MENU : START;
+        }
+    },
+    SUB_MENU {
+        @Override
+        public State handle(Kiosk kiosk) {
+            int userSelect = kiosk.showSubMenuAndGetInput();
+            if (userSelect == 0) {
+                kiosk.setSelectedMainMenu(-1); // 뒤로가기
+                return MAIN_MENU;
+            } else return CART;
+        }
+    },
+    CART {
+        @Override
+        public State handle(Kiosk kiosk) {
+            int userSelect = kiosk.showCartAndGetInput();
+            return userSelect == 1 ? MAIN_MENU : ORDER; // 1) 메뉴판 더보기 2) 결제
+        }
+    },
+    ORDER {
+        @Override
+        public State handle(Kiosk kiosk) {
+            int choice = kiosk.showOrderAndGetInput();
+            return choice == 1 ? EXIT : CART;
+        }
+    },
+    EXIT {
+        @Override
+        public State handle(Kiosk kiosk) {
+            kiosk.showExit();
+            kiosk.closeScanner();
+            return this;
+        }
+    };
 
-    //Consumer 인터페이스 (하나의 입력을 받아서 처리, 아무것도 반환하지 않는(void))
-    private final Consumer<Kiosk> handle;
-    State(Consumer<Kiosk> handle) {
-        this.handle = handle;
-    }
-    public void run(Kiosk kiosk) {
-        //Consumer의 단일 추상 메서드
-        handle.accept(kiosk);
-    }
+    public abstract State handle(Kiosk kiosk);
 }
