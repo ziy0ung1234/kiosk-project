@@ -12,7 +12,7 @@ public enum State {
     MAIN_MENU {
         @Override
         public State handle(Kiosk kiosk) {
-            int userSelect = kiosk.showMainMenu();
+            int userSelect = kiosk.showMainMenuAndGetInput();
             if (userSelect == 0) return START; // 뒤로가기
             kiosk.setSelectedMainMenu(userSelect - 1);
             return kiosk.getSelectedMainMenu().isPresent() ? SUB_MENU : START;

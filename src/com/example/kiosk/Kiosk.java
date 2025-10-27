@@ -74,7 +74,7 @@ public class Kiosk {
         System.out.println(displayMenu);
     }
 
-    public int showMainMenu() {
+    public int showMainMenuAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append("[ 💙Main Menu ]\n").append(LINE).append("\n");
         int index = 1;
