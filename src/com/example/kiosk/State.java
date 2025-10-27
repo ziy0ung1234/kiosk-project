@@ -5,8 +5,8 @@ public enum State {
         @Override
         public State handle(Kiosk kiosk) {
             kiosk.showStart();
-            int choice = kiosk.readUserInput(1,2);
-            return choice == 1 ? MAIN_MENU : EXIT;
+            int userSelect = kiosk.readUserInput(1,2);
+            return userSelect == 1 ? MAIN_MENU : EXIT;
         }
     },
     MAIN_MENU {

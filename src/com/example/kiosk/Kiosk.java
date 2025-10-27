@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 public class Kiosk {
     private static final String LINE = "-".repeat(60);
-
     private State currentState;
     private final Discount discount;
     private final List<Menu> menuList;
@@ -108,7 +107,7 @@ public class Kiosk {
 
     public int showCartAndGetInput() {
         MenuItem item = selectedMenuItem.orElseThrow();
-        String displayMenu = String.format("선택하신 메뉴: %s | %d원\n", item.getName(), item.getPrice()) +
+        String displayMenu = String.format("선택하신 메뉴: %s %d원입니다.\n", item.getName(), item.getPrice()) +
                 "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소";
         System.out.println(displayMenu);
         int selectCartAdd = readUserInput(1,2);
