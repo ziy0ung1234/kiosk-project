@@ -137,8 +137,8 @@ public class Kiosk {
         System.out.println(displayMenu);
         int userSelect = readUserInput(1,2);
         if(userSelect == 1){
+            System.out.printf("🔔 주문 완료되었습니다. 결제 금액 %d입니다.\n", cart.getTotalPrice());
             cart.clearCartItem();
-            System.out.print("주문 완료되었습니다.");
             return userSelect;
         }
         return userSelect;
