@@ -32,6 +32,7 @@ public enum State {
         @Override
         public State handle(Kiosk kiosk) {
             int userSelect = kiosk.showCartAndGetInput();
+            if (userSelect == 0) return MAIN_MENU; // 장바구니 추가 취소
             return userSelect == 1 ? MAIN_MENU : ORDER; // 1) 메뉴판 더보기 2) 결제
         }
     },
@@ -39,7 +40,7 @@ public enum State {
         @Override
         public State handle(Kiosk kiosk) {
             int choice = kiosk.showOrderAndGetInput();
-            return choice == 1 ? PAYMENT : CART;
+            return choice == 1 ? PAYMENT : ORDER;
         }
     },
     PAYMENT {

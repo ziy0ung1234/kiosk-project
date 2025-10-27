@@ -3,6 +3,8 @@ package com.example.kiosk;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.IntStream;
+import java.util.ArrayList;
 
 public class Kiosk {
     private static final String LINE = "-".repeat(60);
@@ -77,11 +79,11 @@ public class Kiosk {
     public int showMainMenuAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append("[ 💙Main Menu ]\n").append(LINE).append("\n");
-        int index = 1;
-        for (Menu menu : menuList) {
-            displayMenu.append(String.format("%2d. %-8s\n", index, menu.getCategoryName()));
-            index++;
-        }
+        //lambda,stream 사용 리스트 조회 구현
+        IntStream.range(0, menuList.size()).forEach(i -> {
+            Menu menu = menuList.get(i);
+            displayMenu.append(String.format("%2d. %-8s\n",i+1,menu.getCategoryName()));
+        });
         displayMenu.append(" 0. 뒤로가기\n");
         System.out.println(displayMenu);
         return readUserInput(0, menuList.size());
@@ -91,24 +93,23 @@ public class Kiosk {
         Menu menu = selectedMainMenu.orElseThrow();
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append(String.format("[ 💙%s ]\n",menu.getCategoryName())).append(LINE).append("\n");
-        List<MenuItem> items = menu.readOnlyMenuItemList();
-        int index = 1;
-        for (MenuItem item : items) {
-            displayMenu.append(String.format("%2d. %-8s | %5d원 | %s\n",
-                    index, item.getName(), item.getPrice(), item.getDescription()));
-            index++;
-        }
+        List<MenuItem> menuItemList = menu.readOnlyMenuItemList();
+        //lambda,stream 사용 리스트 조회 구현
+        IntStream.range(0, menuItemList.size()).forEach (i -> {
+            MenuItem menuItem = menuItemList.get(i);
+            displayMenu.append(String.format("%2d. %-8s | %5d원 | %s\n",i+1,menuItem.getName(),menuItem.getPrice(),menuItem.getDescription()));
+        });
         displayMenu.append(" 0. 뒤로가기\n");
         System.out.println(displayMenu);
-        int userSelect = readUserInput(0, items.size());
-        if (userSelect != 0) selectedMenuItem = Optional.of(items.get(userSelect - 1));
+        int userSelect = readUserInput(0, menuItemList.size());
+        if (userSelect != 0) selectedMenuItem = Optional.of(menuItemList.get(userSelect - 1));
         return userSelect;
     }
 
     public int showCartAndGetInput() {
         MenuItem item = selectedMenuItem.orElseThrow();
         String displayMenu = String.format("선택하신 메뉴: %s | %d원\n", item.getName(), item.getPrice()) +
-                "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소\n";
+                "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소";
         System.out.println(displayMenu);
         int selectCartAdd = readUserInput(1,2);
         if (selectCartAdd == 1) {
@@ -122,37 +123,48 @@ public class Kiosk {
             System.out.printf("%s %d개 추가되었습니다.선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName(), selectedQuantity);
             return readUserInput(1,2);
         }
-        return 2;
+        return 0;
     }
 
     public int showOrderAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append("[ 💙Order List ]\n").append(LINE).append("\n");
-        int idx = 1;
-        for (CartItem cartItem : cart.getCart()) {
-            displayMenu.append(String.format("%2d. %-8s x%d | %5d원\n",
-                    idx++, cartItem.getMenuName(), cartItem.getQuantity(),
-                    cartItem.getMenuPrice() * cartItem.getQuantity()));
-        }
+        //lambda stream 사용 컬렉션 조회
+        List<CartItem> cartItemList = new ArrayList<>(cart.getCart());
+        IntStream.range(0, cartItemList.size()).mapToObj(
+                i -> String.format("%2d. %-8s x%d | %20d원\n",i+1,
+                        cartItemList.get(i).getMenuName(),
+                        cartItemList.get(i).getQuantity(),
+                        cartItemList.get(i).getMenuPrice()*cartItemList.get(i).getQuantity()
+                )).forEach(displayMenu::append);
         displayMenu.append(LINE).append("\n");
-        displayMenu.append(String.format("총합: %d원\n1) 결제하기 2) 뒤로가기\n", cart.getTotalPrice()));
+        displayMenu.append(String.format("%35s총합 %d원\n","", cart.getTotalPrice()));
+        displayMenu.append("취소 하고 싶으신 메뉴 있으신가요?\n1)아니오(결제) 2. 네");
         System.out.println(displayMenu);
         int userSelect = readUserInput(1,2);
-        if(userSelect == 1){
-            return userSelect;
+        if (userSelect == 1) {
+            return 1;
+        } else {
+            cancelOrder();
+            return 0;
         }
-        return userSelect;
+    }
+    public void cancelOrder() {
+        System.out.print("취소 하고싶은 메뉴 이름을 입력해주세요 : ");
+        scanner.nextLine(); // 이전 입력 후 남은 버퍼 비우기
+        String input = scanner.nextLine();
+        cart.removeCartItem(input.trim());
+        System.out.println("취소되었습니다. 장바구니로 돌아갑니다.");
     }
     public int showPaymentAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append("💡해당 되는 할인 코드 있으신가요?\n").append(LINE).append("\n");
-        int index=1;
-        for(Discount discount :Discount.values()) {
-            displayMenu.append(String.format("%s. %s  %d %%\n",index,discount.getDiscountKorean(),discount.getDiscountRate()));
-            index++;
-        }
+        IntStream.range(0, Discount.values().length).forEach(i -> {
+            Discount discount = Discount.values()[i];
+            displayMenu.append(String.format("%s. %s  %d %%\n",i+1,discount.getDiscountKorean(),discount.getDiscountRate()));
+        });
         System.out.println(displayMenu);
-        int userSelect = readUserInput(1,index);
+        int userSelect = readUserInput(1,Discount.values().length);
         int selectedRate = discount.checkDiscountRate(userSelect); // 20, 10, 5, 0
         double discountMultiplier = 1 - (selectedRate / 100.0);
         double discountedPrice = cart.getTotalPrice() * discountMultiplier;

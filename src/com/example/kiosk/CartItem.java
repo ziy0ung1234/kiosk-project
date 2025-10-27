@@ -1,5 +1,6 @@
 package com.example.kiosk;
 
+
 public class CartItem {
     // 메뉴명, 수량, 가격 정보
     private final MenuItem menuItem;

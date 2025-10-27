@@ -13,6 +13,12 @@ public class Cart {
         });
         return cart.get(menuItem);
     }
+    public void removeCartItem(String menuName) {
+        cart.entrySet().stream()
+                .filter(entry -> entry.getKey().getName().equals(menuName))
+                .findFirst()
+                .ifPresent(entry -> cart.remove(entry.getKey()));
+    }
     public void clearCartItem() {
         cart.clear();
     }
