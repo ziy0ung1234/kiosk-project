@@ -23,7 +23,7 @@ public class Cart {
         cart.clear();
     }
     public Collection<CartItem> getCart() {
-        return cart.values();
+        return Collections.unmodifiableCollection(cart.values());
     }
     public int getTotalPrice() {
         return cart.values().stream()
