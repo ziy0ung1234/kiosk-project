@@ -39,7 +39,14 @@ public enum State {
         @Override
         public State handle(Kiosk kiosk) {
             int choice = kiosk.showOrderAndGetInput();
-            return choice == 1 ? EXIT : CART;
+            return choice == 1 ? PAYMENT : CART;
+        }
+    },
+    PAYMENT {
+        @Override
+        public State handle(Kiosk kiosk) {
+            int choice = kiosk.showPaymentAndGetInput();
+            return choice > 0 ? EXIT : CART;
         }
     },
     EXIT {

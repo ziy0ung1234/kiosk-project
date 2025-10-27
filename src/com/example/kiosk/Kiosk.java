@@ -8,6 +8,7 @@ public class Kiosk {
     private static final String LINE = "-".repeat(60);
 
     private State currentState;
+    private final Discount discount;
     private final List<Menu> menuList;
     private final Scanner scanner;
     private Optional<Menu> selectedMainMenu;
@@ -17,6 +18,7 @@ public class Kiosk {
     public Kiosk(List<Menu> menuList) {
         this.menuList = menuList;
         this.currentState = State.START;
+        this.discount = Discount.GENERAL;
         this.scanner = new Scanner(System.in);
         this.selectedMainMenu = Optional.empty();
         this.selectedMenuItem = Optional.empty();
@@ -106,7 +108,7 @@ public class Kiosk {
     public int showCartAndGetInput() {
         MenuItem item = selectedMenuItem.orElseThrow();
         String displayMenu = String.format("선택하신 메뉴: %s | %d원\n", item.getName(), item.getPrice()) +
-                "👆🏻 이 메뉴를 장바구니에 추가할까요?\\n 1) 확인  2) 취소\n";
+                "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소\n";
         System.out.println(displayMenu);
         int selectCartAdd = readUserInput(1,2);
         if (selectCartAdd == 1) {
@@ -117,10 +119,10 @@ public class Kiosk {
                 System.out.printf("%s는 최대 10개까지만 담을 수 있습니다. 수량 10개로 변경합니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName());
                 return readUserInput(1,2);
             }
-            System.out.printf("%s %d개 추가되었습니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName(), selectedQuantity);
+            System.out.printf("%s %d개 추가되었습니다.선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName(), selectedQuantity);
             return readUserInput(1,2);
         }
-        return 0;
+        return 2;
     }
 
     public int showOrderAndGetInput() {
@@ -137,10 +139,25 @@ public class Kiosk {
         System.out.println(displayMenu);
         int userSelect = readUserInput(1,2);
         if(userSelect == 1){
-            System.out.printf("🔔 주문 완료되었습니다. 결제 금액 %d입니다.\n", cart.getTotalPrice());
-            cart.clearCartItem();
             return userSelect;
         }
+        return userSelect;
+    }
+    public int showPaymentAndGetInput() {
+        StringBuilder displayMenu = new StringBuilder();
+        displayMenu.append("💡해당 되는 할인 코드 있으신가요?\n").append(LINE).append("\n");
+        int index=1;
+        for(Discount discount :Discount.values()) {
+            displayMenu.append(String.format("%s. %s  %d %%\n",index,discount.getDiscountKorean(),discount.getDiscountRate()));
+            index++;
+        }
+        System.out.println(displayMenu);
+        int userSelect = readUserInput(1,index);
+        int selectedRate = discount.checkDiscountRate(userSelect); // 20, 10, 5, 0
+        double discountMultiplier = 1 - (selectedRate / 100.0);
+        double discountedPrice = cart.getTotalPrice() * discountMultiplier;
+        System.out.printf("🔔 주문 완료되었습니다. 결제 금액 %d입니다.\n", (int)discountedPrice);
+        cart.clearCartItem();
         return userSelect;
     }
 
