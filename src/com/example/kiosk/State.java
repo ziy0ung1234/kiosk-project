@@ -1,51 +1,53 @@
 package com.example.kiosk;
 
 public enum State {
-    START{
+    START {
         @Override
         public State handle(Kiosk kiosk) {
-            System.out.printf("💙안녕하세요 블루 보틀입니다\n%s\n 주문하시겠습니까  1) 네  2) 아니오\n",kiosk.LINE);
-            int userSelectNumber = kiosk.changeInputType(1,2);
-            return (userSelectNumber == 1) ? MAIN_MENU : EXIT;
+            kiosk.showStart();
+            int choice = kiosk.readUserInput(1,2);
+            return choice == 1 ? MAIN_MENU : EXIT;
         }
     },
-    MAIN_MENU{
+    MAIN_MENU {
         @Override
         public State handle(Kiosk kiosk) {
-            kiosk.promptMenuList();
-            int userSelectNumber = kiosk.changeInputType(0,kiosk.getMenuList().size());
-            if (userSelectNumber == 0) {
-                return START;
-            }
-            kiosk.setSelectedMainMenu(userSelectNumber);
-            // 값이 있으면 SUB_MENU, 없으면 START로
+            int userSelect = kiosk.showMainMenu();
+            if (userSelect == 0) return START; // 뒤로가기
+            kiosk.setSelectedMainMenu(userSelect - 1);
             return kiosk.getSelectedMainMenu().isPresent() ? SUB_MENU : START;
         }
     },
-    SUB_MENU{
+    SUB_MENU {
         @Override
         public State handle(Kiosk kiosk) {
-            return kiosk.handleSubMenuState();
+            int userSelect = kiosk.showSubMenuAndGetInput();
+            if (userSelect == 0) {
+                kiosk.setSelectedMainMenu(-1); // 뒤로가기
+                return MAIN_MENU;
+            } else return CART;
         }
     },
-    CART{
+    CART {
         @Override
         public State handle(Kiosk kiosk) {
-            return kiosk.handleCartState();
+            int userSelect = kiosk.showCartAndGetInput();
+            return userSelect == 1 ? MAIN_MENU : ORDER; // 1) 메뉴판 더보기 2) 결제
         }
     },
-    ORDER{
+    ORDER {
         @Override
         public State handle(Kiosk kiosk) {
-            return kiosk.handleOrderState();
+            int choice = kiosk.showOrderAndGetInput();
+            return choice == 1 ? EXIT : CART;
         }
     },
-    EXIT{
+    EXIT {
         @Override
         public State handle(Kiosk kiosk) {
-            System.out.println("다음에 다시 찾아주세요 💙");
+            kiosk.showExit();
             kiosk.closeScanner();
-            return EXIT;
+            return this;
         }
     };
 

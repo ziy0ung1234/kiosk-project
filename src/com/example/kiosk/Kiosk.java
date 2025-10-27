@@ -1,20 +1,17 @@
 package com.example.kiosk;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
-/**
- * 메뉴 관리, 사용자 입력 처리
- * */
 public class Kiosk {
-    public static final String LINE = "-".repeat(60); //불변 상수
+    private static final String LINE = "-".repeat(60);
+
     private State currentState;
     private final List<Menu> menuList;
-    private final Scanner scanner;               // 공통적으로 입력되던 매개변수 필드로 지정
-    private Optional<Menu> selectedMainMenu;     // 공통적으로 입력되던 매개변수 필드로 지정(사용자가 선택한 메뉴를 메서드 간 공유해야 함)
-    private Optional<MenuItem> selectedMenuItem; // 공통적으로 입력되던 매개변수 필드로 지정(사용자가 선택한 메뉴를 메서드 간 공유해야 함)
+    private final Scanner scanner;
+    private Optional<Menu> selectedMainMenu;
+    private Optional<MenuItem> selectedMenuItem;
     private final Cart cart;
 
     public Kiosk(List<Menu> menuList) {
@@ -25,92 +22,41 @@ public class Kiosk {
         this.selectedMenuItem = Optional.empty();
         this.cart = new Cart();
     }
-    // -- 실행 메소드 --
+
+    // --- 실행 메서드 ---
     public void start() {
-        while(currentState != State.EXIT) {
+        while (true) {
             currentState = currentState.handle(this);
-        }
-    }
-    // -- 상태별 handle 메소드 --
-    public State handleSubMenuState() {
-        if (selectedMainMenu.isEmpty()) return State.MAIN_MENU;
-        Menu selectedMenu = selectedMainMenu.get();
-        List<MenuItem> menuItemList = selectedMenu.readOnlyMenuItemList();
-        promptMenuItemList(selectedMenu);
-        int userSelectNumber = changeInputType(0, menuItemList.size());
-        if (userSelectNumber == 0) {
-            selectedMainMenu = Optional.empty();
-            return State.MAIN_MENU;
-        }
-        if (userSelectNumber >= 1 && userSelectNumber <= menuItemList.size()) {
-            selectedMenuItem = Optional.of(menuItemList.get(userSelectNumber - 1));
-            selectedMenuItem.ifPresent(menuItem ->
-                    System.out.printf("선택하신 메뉴 : %-8s | %5d원 | %s 입니다.\n",
-                            menuItem.getName(), menuItem.getPrice(), menuItem.getDescription())
-            );
-            return State.CART;
-        }
-        System.out.println("잘못된 입력입니다. 0~" + menuItemList.size() + " 중 하나를 입력해주세요.\n");
-        return State.SUB_MENU;
-    }
-    public State handleCartState(){
-        System.out.println("👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소 ");
-        int userSelectNumber =  changeInputType(1,2);
-        if (userSelectNumber == 1) {
-            System.out.println("수량을 선택해주세요( 동일 메뉴 최대 10개 )");
-            int selectedQuantity =  changeInputType(1,10);
-            if(selectedMenuItem.isPresent()){
-                MenuItem menuItem = selectedMenuItem.get();
-                cart.addCartItem(menuItem, selectedQuantity);
-                System.out.printf("%s %d개 추가되었습니다.\n 메뉴를 더 보시겠어요?\n1) 네  2) 아니오  \n",
-                        menuItem.getName(), selectedQuantity);
-                int userSelectState = changeInputType(1,2);
-                return (userSelectState == 1) ? State.MAIN_MENU : State.ORDER;
-            } else {
-                System.out.print("선택되지 않았습니다. 메뉴로 돌아갑니다.");
-                return State.MAIN_MENU; // 메뉴 선택의 가장 상위로 돌아감
+            if (currentState == State.EXIT) {
+                currentState.handle(this); // EXIT 메시지 출력 하고 종료
+                break;
             }
-        } else return State.MAIN_MENU;
-    }
-    public State handleOrderState() {
-        promptCartItemList(cart);
-        int userSelectNumber = changeInputType(1,2);
-        if (userSelectNumber == 1) {
-            System.out.println("주문이 완료되었습니다.");
-            return State.EXIT;
         }
-        return State.MAIN_MENU;
     }
 
-    // -- 공통 메서드 --
-    public String readUserInput() {
-        System.out.print("선택: ");
-        return scanner.next();
-    }
-    public int changeInputType(int min, int max) {
+    // --- 유틸 메서드 ---
+    public int readUserInput(int min, int max) {
         while (true) {
-            String input = readUserInput();
+            System.out.print("선택: ");
+            String input = scanner.next();
             try {
-                int selectedNumber = Integer.parseInt(input);
-                if(selectedNumber >= min && selectedNumber <= max) {
-                    return  selectedNumber;
-                } else {
-                    System.out.printf("잘못된 입력입니다. %d과 %d사이에서 선택해 주세요\n", min, max);
-                }
-            } catch (NumberFormatException | IndexOutOfBoundsException e) {
-                System.out.printf("잘못된 입력입니다. %d과 %d사이에서 선택해 주세요\n", min, max);
+                int value = Integer.parseInt(input);
+                if (value >= min && value <= max) return value;
+                System.out.printf("잘못된 입력입니다. %d~%d 사이에서 선택해주세요.\n", min, max);
+            } catch (NumberFormatException e) {
+                System.out.printf("숫자를 입력해주세요. %d~%d 사이에서 선택해주세요.\n", min, max);
             }
         }
     }
+
     public void closeScanner() {
         scanner.close();
     }
-    public List<Menu> getMenuList() {
-        return Collections.unmodifiableList(menuList);
-    }
+
     public Optional<Menu> getSelectedMainMenu() {
         return selectedMainMenu;
     }
+
     public void setSelectedMainMenu(int index) {
         if (index >= 0 && index < menuList.size()) {
             selectedMainMenu = Optional.of(menuList.get(index));
@@ -118,44 +64,77 @@ public class Kiosk {
             selectedMainMenu = Optional.empty();
         }
     }
-    // ----- 리스트 출력 메소드 -------
-    public void promptMenuList() {
-        StringBuilder displayPrompt = new StringBuilder();
-        displayPrompt.append("[ 💙Main Menu ]\n").append(LINE).append("\n");
-        int index = 1;
-        for(Menu menu : menuList) {
-            displayPrompt.append(String.format("%2d. %-8s\n", index, menu.getCategoryName()));
-            index++;
-        }
-        displayPrompt.append(" 0. 뒤로 가기 \n");
-        System.out.println(displayPrompt);
+
+    // --- 각 상태별 UI 출력 + 입력 반환 ---
+    public void showStart() {
+        String displayMenu = "💙 안녕하세요 블루 보틀입니다\n" + LINE +
+                "\n주문하시겠습니까? 1) 네 2) 아니오";
+        System.out.println(displayMenu);
     }
 
-    public void promptMenuItemList(Menu menu) {
-        StringBuilder displayPrompt = new StringBuilder();
-        displayPrompt.append("[ 💙Blue Bottle ]\n").append(LINE).append("\n");
+    public int showMainMenu() {
+        StringBuilder displayMenu = new StringBuilder();
+        displayMenu.append("[ 💙Main Menu ]\n").append(LINE).append("\n");
         int index = 1;
-        for (MenuItem item : menu.readOnlyMenuItemList()) {
-            displayPrompt.append(String.format("%2d. %-8s | %5d원 | %s\n",
+        for (Menu menu : menuList) {
+            displayMenu.append(String.format("%2d. %-8s\n", index, menu.getCategoryName()));
+            index++;
+        }
+        displayMenu.append(" 0. 뒤로가기\n");
+        System.out.println(displayMenu);
+        return readUserInput(0, menuList.size());
+    }
+
+    public int showSubMenuAndGetInput() {
+        Menu menu = selectedMainMenu.orElseThrow();
+        StringBuilder displayMenu = new StringBuilder();
+        displayMenu.append(String.format("[ 💙%s ]\n",menu.getCategoryName())).append(LINE).append("\n");
+        List<MenuItem> items = menu.readOnlyMenuItemList();
+        int index = 1;
+        for (MenuItem item : items) {
+            displayMenu.append(String.format("%2d. %-8s | %5d원 | %s\n",
                     index, item.getName(), item.getPrice(), item.getDescription()));
             index++;
         }
-        displayPrompt.append(" 0. 뒤로가기 \n");
-        System.out.println(displayPrompt);
+        displayMenu.append(" 0. 뒤로가기\n");
+        System.out.println(displayMenu);
+        int userSelect = readUserInput(0, items.size());
+        if (userSelect != 0) selectedMenuItem = Optional.of(items.get(userSelect - 1));
+        return userSelect;
     }
 
-    public void promptCartItemList(Cart cart) {
-        StringBuilder displayPrompt = new StringBuilder();
-        displayPrompt.append("[ 💙Order List ]\n").append(LINE).append("\n");
-        int index = 1;
-        for ( CartItem cartItem: cart.getCart()) {
-            displayPrompt.append(String.format("%2d. %-8s x%d  %30d원\n",
-                    index,cartItem.getMenuName(), cartItem.getQuantity(), cartItem.getMenuPrice()*cartItem.getQuantity()));
-            index++;
+    public int showCartAndGetInput() {
+        MenuItem item = selectedMenuItem.orElseThrow();
+        String displayMenu = String.format("선택하신 메뉴: %s | %d원\n", item.getName(), item.getPrice()) +
+                "👆🏻 이 메뉴를 장바구니에 추가할까요?\\n 1) 확인  2) 취소\n";
+        System.out.println(displayMenu);
+        int selectCartAdd = readUserInput(1,2);
+        if (selectCartAdd == 1) {
+            System.out.println("수량 선택 (1~10):");
+            int selectedQuantity = readUserInput(1,10);
+            cart.addCartItem(item, selectedQuantity);
+            System.out.printf("%s %d개 추가되었습니다.\n메뉴를 더 보시겠어요?\n1) 네  2) 아니오  \n", item.getName(), selectedQuantity);
+            return readUserInput(1,2);
         }
-        displayPrompt.append(LINE).append(String.format("\n%40s총합 %d원\n%s\n1. 결제하기 2. 뒤로가기","",cart.getTotalPrice(),LINE));
-        System.out.println(displayPrompt);
+        return 0;
     }
 
-}
+    public int showOrderAndGetInput() {
+        StringBuilder displayMenu = new StringBuilder();
+        displayMenu.append("[ 💙Order List ]\n").append(LINE).append("\n");
+        int idx = 1;
+        for (CartItem cartItem : cart.getCart()) {
+            displayMenu.append(String.format("%2d. %-8s x%d | %5d원\n",
+                    idx++, cartItem.getMenuName(), cartItem.getQuantity(),
+                    cartItem.getMenuPrice() * cartItem.getQuantity()));
+        }
+        displayMenu.append(LINE).append("\n");
+        displayMenu.append(String.format("총합: %d원\n1) 결제하기 2) 뒤로가기\n", cart.getTotalPrice()));
+        System.out.println(displayMenu);
+        return readUserInput(1,2);
+    }
 
+    public void showExit() {
+        System.out.println("다음에 다시 찾아주세요 💙");
+    }
+}
