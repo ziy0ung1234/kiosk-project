@@ -104,7 +104,7 @@ public class Kiosk {
         Menu menu = selectedMainMenu.orElseThrow();
         StringBuilder displayMenu = new StringBuilder();
         displayMenu.append(String.format("\n[ 💙 %s ]\n",menu.getCategoryName())).append(LINE).append("\n");
-        List<MenuItem> menuItemList = menu.readOnlyMenuItemList();
+        List<MenuItem> menuItemList = menu.getMenuItemList();
         //lambda,stream 사용 리스트 조회 구현
         IntStream.range(0, menuItemList.size()).forEach (i -> {
             MenuItem menuItem = menuItemList.get(i);
