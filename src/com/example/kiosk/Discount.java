@@ -5,7 +5,7 @@ package com.example.kiosk;
  * */
 public enum Discount {
     DISABILITY("복지", 20),
-    SOLIDER("군인", 10),
+    SOLDIER("군인", 10),
     STUDENT("학생", 5),
      GENERAL("일반", 0);
 
