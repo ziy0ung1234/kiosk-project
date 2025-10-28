@@ -16,7 +16,7 @@ public class Kiosk {
     private State currentState;
     private final Discount discount;
     private final List<Menu> menuList;
-    private final Cart cart;
+    private final Cart<MenuItem, CartItem> cart;
     private final Scanner scanner;               // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
     private Optional<Menu> selectedMainMenu;     // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
     private Optional<MenuItem> selectedMenuItem; // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
@@ -28,7 +28,7 @@ public class Kiosk {
         this.scanner = new Scanner(System.in);
         this.selectedMainMenu = Optional.empty();
         this.selectedMenuItem = Optional.empty();
-        this.cart = new Cart();
+        this.cart = new Cart<>();
     }
 
     // --- 실행 메서드 ---
@@ -118,20 +118,20 @@ public class Kiosk {
     }
 
     public int showCartAndGetInput() {
-        MenuItem item = selectedMenuItem.orElseThrow();
-        String displayMenu = String.format("\n선택하신 메뉴: %s %d원입니다.\n", item.getName(), item.getPrice()) +
+        MenuItem MenuItem = selectedMenuItem.orElseThrow();
+        String displayMenu = String.format("\n선택하신 메뉴: %s %d원입니다.\n", MenuItem.getName(), MenuItem.getPrice()) +
                 "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소";
         System.out.println(displayMenu);
         int selectCartAdd = readUserInput(1,2);
         if (selectCartAdd == 1) {
             System.out.println("수량 선택 (1~10):");
             int selectedQuantity = readUserInput(1,10);
-            CartItem cartItem = cart.addCartItem(item, selectedQuantity);
+            CartItem cartItem = cart.addCartItem(MenuItem, selectedQuantity);
             if(cartItem.getQuantity() == 10 && selectedQuantity > 0){
-                System.out.printf("%s는 최대 10개까지만 담을 수 있습니다. 수량 10개로 변경합니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName());
+                System.out.printf("%s는 최대 10개까지만 담을 수 있습니다. 수량 10개로 변경합니다.\n선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", MenuItem.getName());
                 return readUserInput(1,2);
             }
-            System.out.printf("%s %d개 추가되었습니다.선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", item.getName(), selectedQuantity);
+            System.out.printf("%s %d개 추가되었습니다.선택한 메뉴 확인하시겠어요?\n1) 메뉴 선택  2) 확인  \n", MenuItem.getName(), selectedQuantity);
             return readUserInput(1,2);
         }
         return 0;
