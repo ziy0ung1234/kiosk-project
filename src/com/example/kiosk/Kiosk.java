@@ -16,7 +16,7 @@ public class Kiosk {
     private State currentState;
     private final Discount discount;
     private final List<Menu> menuList;
-    private final Cart cart;
+    private final Cart<MenuItem> cart;
     private final Scanner scanner;               // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
     private Optional<Menu> selectedMainMenu;     // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
     private Optional<MenuItem> selectedMenuItem; // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
@@ -28,7 +28,7 @@ public class Kiosk {
         this.scanner = new Scanner(System.in);
         this.selectedMainMenu = Optional.empty();
         this.selectedMenuItem = Optional.empty();
-        this.cart = new Cart();
+        this.cart = new Cart<>();
     }
 
     // --- 실행 메서드 ---
