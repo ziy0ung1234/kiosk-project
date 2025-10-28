@@ -6,15 +6,20 @@ import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.ArrayList;
 
+/**
+ * 입출력 처리, 필드 관리 클래스
+ *  - 메뉴 리스트, 장바구니, 사용자 입력등 공유 필드 관리
+ *  - 각 State가 사용할 유틸 메서드, UI 출력 메서드 제공
+ * */
 public class Kiosk {
     private static final String LINE = "-".repeat(60);
     private State currentState;
     private final Discount discount;
     private final List<Menu> menuList;
-    private final Scanner scanner;
-    private Optional<Menu> selectedMainMenu;
-    private Optional<MenuItem> selectedMenuItem;
     private final Cart cart;
+    private final Scanner scanner;               // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
+    private Optional<Menu> selectedMainMenu;     // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
+    private Optional<MenuItem> selectedMenuItem; // 매개변수로 두번 이상 사용되는 객체 공유 필드로 사용
 
     public Kiosk(List<Menu> menuList) {
         this.menuList = menuList;
@@ -38,6 +43,10 @@ public class Kiosk {
     }
 
     // --- 유틸 메서드 ---
+    /**
+     * @param min  사용자 입력화면에서 입력할 수 있는 최소 숫자 1-based
+     * @param max  사용자 입력화면에서 입력할 수 있는 최대 숫자
+     * */
     public int readUserInput(int min, int max) {
         while (true) {
             System.out.print("선택: ");
@@ -60,6 +69,9 @@ public class Kiosk {
         return selectedMainMenu;
     }
 
+    /**
+     * @param index  사용자 입력화면 1-base에서 리스트 0-base로 전환한 인덱스
+     * */
     public void setSelectedMainMenu(int index) {
         if (index >= 0 && index < menuList.size()) {
             selectedMainMenu = Optional.of(menuList.get(index));

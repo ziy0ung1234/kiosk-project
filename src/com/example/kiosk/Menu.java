@@ -3,6 +3,9 @@ package com.example.kiosk;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *  상위 메뉴 관리 클래스
+ * */
 public class Menu {
     private final String categoryName;
     private final List<MenuItem> menuItemList;

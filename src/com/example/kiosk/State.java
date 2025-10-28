@@ -1,5 +1,9 @@
 package com.example.kiosk;
 
+/**
+ *  상태 전이에 대한 책임 클래스
+ *  - 각 상태별 메소드 전환을 처리한다.
+ * */
 public enum State {
     START {
         @Override
@@ -59,6 +63,8 @@ public enum State {
             return this;
         }
     };
-
+    /**
+     * @param kiosk  Kiosk 객체
+     * */
     public abstract State handle(Kiosk kiosk);
 }

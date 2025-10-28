@@ -1,5 +1,8 @@
 package com.example.kiosk;
 
+/**
+ * 할인에 대한 상수 집합 클래스
+ * */
 public enum Discount {
     DISABILITY("복지", 20),
     SOLIDER("군인", 10),
@@ -19,6 +22,9 @@ public enum Discount {
     public int getDiscountRate() {
         return discountRate;
     }
+    /**
+     * @param userSelect 유저가 선택한 할인코드 인덱스 1-based
+     * */
     public int checkDiscountRate(int userSelect) {
         int index = 0;
         for (Discount discount : Discount.values()) {

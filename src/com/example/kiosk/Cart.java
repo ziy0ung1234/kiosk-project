@@ -2,6 +2,9 @@ package com.example.kiosk;
 
 import java.util.*;
 
+/**
+ *  전체적인 장바구니 관리 클래스
+ * */
 public class Cart {
     private final Map<MenuItem, CartItem> cart = new HashMap<>();
 
