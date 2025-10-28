@@ -14,10 +14,22 @@ public class Cart {
         return cart.get(menuItem);
     }
     public void removeCartItem(String menuName) {
-        cart.entrySet().stream()
-                .filter(entry -> entry.getKey().getName().equals(menuName))
-                .findFirst()
-                .ifPresent(entry -> cart.remove(entry.getKey()));
+        if (cart.isEmpty()) {
+            System.out.println("장바구니가 비어있습니다");
+            return;
+        }
+        boolean isExist = cart.keySet().stream()
+                        .anyMatch(menuItem -> menuItem.getName().equals(menuName.trim()));
+        if(!isExist){
+            System.out.println("일치하는 메뉴가 없습니다.");
+        } else {
+            cart.entrySet().stream()
+                    .filter(entry -> entry.getKey().getName().equals(menuName))
+                    .findFirst()
+                    .ifPresent(entry -> cart.remove(entry.getKey()));
+            System.out.println("취소되었습니다.");
+        }
+
     }
     public void clearCartItem() {
         cart.clear();

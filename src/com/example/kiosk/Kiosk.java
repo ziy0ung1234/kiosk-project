@@ -77,7 +77,7 @@ public class Kiosk {
 
     public int showMainMenuAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
-        displayMenu.append("[ 💙Main Menu ]\n").append(LINE).append("\n");
+        displayMenu.append("\n[ 💙 Main Menu ]\n").append(LINE).append("\n");
         //lambda,stream 사용 리스트 조회 구현
         IntStream.range(0, menuList.size()).forEach(i -> {
             Menu menu = menuList.get(i);
@@ -91,7 +91,7 @@ public class Kiosk {
     public int showSubMenuAndGetInput() {
         Menu menu = selectedMainMenu.orElseThrow();
         StringBuilder displayMenu = new StringBuilder();
-        displayMenu.append(String.format("[ 💙%s ]\n",menu.getCategoryName())).append(LINE).append("\n");
+        displayMenu.append(String.format("\n[ 💙 %s ]\n",menu.getCategoryName())).append(LINE).append("\n");
         List<MenuItem> menuItemList = menu.readOnlyMenuItemList();
         //lambda,stream 사용 리스트 조회 구현
         IntStream.range(0, menuItemList.size()).forEach (i -> {
@@ -107,7 +107,7 @@ public class Kiosk {
 
     public int showCartAndGetInput() {
         MenuItem item = selectedMenuItem.orElseThrow();
-        String displayMenu = String.format("선택하신 메뉴: %s %d원입니다.\n", item.getName(), item.getPrice()) +
+        String displayMenu = String.format("\n선택하신 메뉴: %s %d원입니다.\n", item.getName(), item.getPrice()) +
                 "👆🏻 이 메뉴를 장바구니에 추가할까요?\n 1) 확인  2) 취소";
         System.out.println(displayMenu);
         int selectCartAdd = readUserInput(1,2);
@@ -127,7 +127,7 @@ public class Kiosk {
 
     public int showOrderAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();
-        displayMenu.append("[ 💙Order List ]\n").append(LINE).append("\n");
+        displayMenu.append("\n[ 💙 Order List ]\n").append(LINE).append("\n");
         //lambda stream 사용 컬렉션 조회
         List<CartItem> cartItemList = new ArrayList<>(cart.getCart());
         IntStream.range(0, cartItemList.size()).mapToObj(
@@ -145,7 +145,11 @@ public class Kiosk {
             return 1;
         } else {
             cancelOrder();
-            return 0;
+            if(cart.getCart().isEmpty()){
+                System.out.println("장바구니가 비어 메뉴로 돌아갑니다");
+                return 0; // 뒤로 가기
+            }
+            return 2;
         }
     }
     public void cancelOrder() {
@@ -153,7 +157,6 @@ public class Kiosk {
         scanner.nextLine(); // 이전 입력 후 남은 버퍼 비우기
         String input = scanner.nextLine();
         cart.removeCartItem(input.trim());
-        System.out.println("취소되었습니다. 장바구니로 돌아갑니다.");
     }
     public int showPaymentAndGetInput() {
         StringBuilder displayMenu = new StringBuilder();

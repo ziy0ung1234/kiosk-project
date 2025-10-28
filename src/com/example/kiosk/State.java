@@ -39,8 +39,9 @@ public enum State {
     ORDER {
         @Override
         public State handle(Kiosk kiosk) {
-            int choice = kiosk.showOrderAndGetInput();
-            return choice == 1 ? PAYMENT : ORDER;
+            int userSelect = kiosk.showOrderAndGetInput();
+            if(userSelect == 0) return MAIN_MENU; // 도전 Lv2. 사용자 취소로 장바구니 비워졌을 때
+            return userSelect == 1 ? PAYMENT : ORDER;
         }
     },
     PAYMENT {
