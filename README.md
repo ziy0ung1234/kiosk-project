@@ -12,7 +12,11 @@
 - level4: 필수4. 객체 지향 설계를 적용해 음식 메뉴와 주문 내역을 클래스 기반으로 관리하기
 - level5: 필수5. 캡슐화 적용하기
 - level6: 도전1. 장바구니 및 구매하기 기능을 추가하기
-- level7: 도전2.  Enum, 람다 & 스트림을 활용한 주문 및 장바구니 관리 
+- level7: 도전2.  Enum, 람다 & 스트림을 활용한 주문 및 장바구니 관리
+
+## 클래스 다이어 그램
+![Kiosk UML Diagram](https://github.com/user-attachments/assets/958ae24f-e7f4-47ae-afbc-fa7735fc73c6)
+
 
 ## 🎯 브랜치별 주요 기능
 
