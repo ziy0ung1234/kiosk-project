@@ -16,12 +16,11 @@ public class Cart {
      */
     public CartItem addCartItem(MenuItem menuItem, int quantity) {
         String menuName = menuItem.getName();
-        cart.compute(menuName, (name, cartItem) -> {
+        return cart.compute(menuName, (name, cartItem) -> {
             if (cartItem == null) cartItem = new CartItem(menuItem);
             cartItem.increaseQuantity(quantity);
             return cartItem;
         });
-        return cart.get(menuName);
     }
     public void removeCartItem(String menuName) {
         if (cart.isEmpty()) {
