@@ -15,7 +15,7 @@
 - level7: 도전2.  Enum, 람다 & 스트림을 활용한 주문 및 장바구니 관리
 
 ## 클래스 다이어 그램
-![Kiosk UML Diagram](https://github.com/user-attachments/assets/9e9ed565-e800-4240-8834-6fe57649d25d)
+![Kiosk UML Diagram](https://github.com/user-attachments/assets/783bc6db-e050-4069-91ae-4c9066068a35)
 
 ## 🎯 브랜치별 주요 기능
 
