@@ -1,5 +1,8 @@
 package com.example.kiosk;
 
+/**
+ *  장바구니 내 아이템에 대한 책임(수량, 가격) 관리 클래스
+ * */
 public class CartItem {
     // 메뉴명, 수량, 가격 정보
     private final MenuItem menuItem;
@@ -12,6 +15,9 @@ public class CartItem {
     public int getQuantity() {
         return quantity;
     }
+    /**
+     * @param quantity  유저가 선택한 수량
+     * */
     public void increaseQuantity(int quantity) {
         this.quantity += Math.min(quantity, 10 - this.quantity);
     }
@@ -23,5 +29,9 @@ public class CartItem {
     }
     public int getMenuPrice() {
         return  menuItem.getPrice();
+    }
+    // 각 아이템 총 가격 계산 책임
+    public int getTotalPrice() {
+        return menuItem.getPrice() * quantity;
     }
 }

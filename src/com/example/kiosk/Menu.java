@@ -3,6 +3,9 @@ package com.example.kiosk;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ *  상위 메뉴 관리 클래스
+ * */
 public class Menu {
     private final String categoryName;
     private final List<MenuItem> menuItemList;
@@ -16,7 +19,7 @@ public class Menu {
     }
 
     // 참조 공유 방지를 위한 읽기전용 getter 메소드
-    public List<MenuItem> readOnlyMenuItemList() {
+    public List<MenuItem> getMenuItemList() {
         return Collections.unmodifiableList(menuItemList);
     }
 
