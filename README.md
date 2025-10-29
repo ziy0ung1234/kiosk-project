@@ -77,10 +77,13 @@
 - UI 출력 전반 Stream/람다로 개선
 - 주문 > 결제 > 종료까지 완전한 흐름 완성
 - `Cart`
-  - 이름으로 삭제 가능 추가.존재 여부(anyMatch) 확인 후 삭제 맟 삭제 메시지 출력
+  - 이름으로 삭제 가능 추가.entrySet -> filter -> findFirst -> ifPresent 확인 후 삭제 맟 삭제 메시지 출력
   - 장바구니 전체 비우기 메서드 추가
+  - cart 필드 동등성 비교 안전성 이슈로 Map<String, CartItem>으로 수정
+  - Cart는 CartItem에 대한 총 합산만 수행
 - `CartItem`
-  - 개별 메뉴 아이템의 수량 관리, 사용자의 반복추가 입력 시 과도한 수량 방지
+  - 각 아이템의 수량 관리, 사용자의 반복추가 입력 시 과도한 수량 방지
+  - 각 아이템의 총 가격 관리
 - `Discount`
   - 할인 정책 상수 Enum 관리
 - `Kisok`
