@@ -30,4 +30,8 @@ public class CartItem {
     public int getMenuPrice() {
         return  menuItem.getPrice();
     }
+    // 각 아이템 총 가격 계산 책임
+    public int getTotalPrice() {
+        return menuItem.getPrice() * quantity;
+    }
 }
